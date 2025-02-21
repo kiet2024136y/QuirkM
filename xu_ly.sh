@@ -1,5 +1,6 @@
 #!/bin/bash 
 echo -e "\e[33m[*]dang cai dat......\e[0m"
+pkg install python3 -y
 pkg install wget -y
 pkg install mono -y
 pkg update -y
