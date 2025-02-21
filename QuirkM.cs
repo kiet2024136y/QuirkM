@@ -1,12 +1,11 @@
-using System;
 
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Net.NetworkInformation;
-
 namespace QuirkM
 {
 
@@ -15,12 +14,12 @@ namespace QuirkM
         public static void Main()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(@"____                      __   __
- / __ \                    |  \ /  |
-| | __ | | _   _ _   ___  _  _ | v |
+            Console.WriteLine(@"____ __ __
+ / __ \ | \ / |
+| | __ | | _ _ _ ___ _ _ | v |
 | __ | | | | | / _ \| |/ / |\_ /| |
-| | __ | | | _ | | || | _) )   <| |   | |
- \____ / \___ / \_)  __ /| _ |\_\_ |   | _ |
+| | __ | | | _ | | || | _) ) <| | | |
+ \____ / \___ / \_) __ /| _ |\_\_ | | _ |
                 | |
                 | _ | ");
             Console.ResetColor();
@@ -185,6 +184,7 @@ namespace QuirkM
                 }
 
 
+
                 // Phương thức nhận tin nhắn từ server
                 static void RecvMsg(NetworkStream ns)
                 {
@@ -212,3 +212,4 @@ namespace QuirkM
         }
     }
 }
+
