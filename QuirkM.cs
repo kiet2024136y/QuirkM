@@ -1,4 +1,5 @@
 using System;
+
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -142,89 +143,72 @@ namespace QuirkM
                 }
                 else if (chuoi == "TN")
                 {
-
-
-                    String ip = GetLocalIPAddress();
+                    //change your wifi ip address or province ip address 
+                    string ip = "192.168.1.7";
                     int port = 5001;
-                    TcpClient cli = new TcpClient(ip, port);
-                    NetworkStream ns = cli.GetStream();
-                    Thread recv = new Thread(() => RecvMsg(ns));
-                    recv.Start();
-
-
 
                     try
                     {
+                        TcpClient client = new TcpClient(ip, port);
+                        NetworkStream ns = client.GetStream();
+
+                        // Bắt đầu luồng nhận tin nhắn từ server
+                        Thread recvThread = new Thread(() => RecvMsg(ns));
+                        recvThread.Start();
+
+                        // Gửi tin nhắn đến server
                         while (true)
                         {
-                            Console.Write("Nhap tin nhan:");
-                            String msg = Console.ReadLine();
+                            Console.Write("Nhap tin nhan: ");
+                            string msg = Console.ReadLine();
                             if (msg.ToLower() == "exit")
                             {
-                                cli.Close();
+                                client.Close();
                                 break;
                             }
-                            byte[] date = Encoding.UTF8.GetBytes(msg);
-                            ns.Write(date, 0, date.Length);
+
+                            byte[] data = Encoding.UTF8.GetBytes(msg);
+                            ns.Write(data, 0, data.Length); // Gửi tin nhắn tới server
                         }
                     }
                     catch (Exception e)
                     {
-                        Console.Write("Loi:" + e.Message);
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Loi khi ket noi server: " + e.Message);
+                        Console.ResetColor();
                     }
-
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Vui long nhap -> hoac <- de thuc hien dich vi ,xin cam on");
+                    Console.ResetColor();
                 }
 
-            }
 
-        }
-        static string GetLocalIPAddress()
-        {
-            string localIP = "";
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                // Phương thức nhận tin nhắn từ server
+                static void RecvMsg(NetworkStream ns)
                 {
-                    localIP = ip.ToString();
-                    break;
-                }
-            }
-            return localIP;
-        }
-
-        static void RecvMsg(NetworkStream ns)
-        {
-
-            Byte[] bufef = new byte[1024];
-            while (true)
-            {
-                int len = ns.Read(bufef, 0, bufef.Length);
-                if (len == 0) break;
-                Console.WriteLine("\n" + Encoding.UTF8.GetString(bufef, 0, len));
-            }
-        }
-        public class NetworkUtils
-        {
-            public static bool CheckInternetConnection()
-            {
-                try
-                {
-                    using (var ping = new Ping())
+                    byte[] buffer = new byte[1024];
+                    try
                     {
-                        var reply = ping.Send("8.8.8.8", 3000);
-                        return reply.Status == IPStatus.Success;
+                        while (true)
+                        {
+                            int bytesRead = ns.Read(buffer, 0, buffer.Length);
+                            if (bytesRead == 0)
+                                break;
+
+                            // Hiển thị tin nhắn từ server
+                            string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                            Console.WriteLine("Received message: " + message);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error: " + ex.Message);
                     }
                 }
-                catch
-                {
-                    return false;
-                }
+
             }
         }
     }
