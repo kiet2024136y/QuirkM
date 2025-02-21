@@ -143,7 +143,6 @@ namespace QuirkM
                 }
                 else if (chuoi == "TN")
                 {
-                    //change your wifi ip address or province ip address 
                     string ip = "192.168.1.7";
                     int port = 5001;
 
