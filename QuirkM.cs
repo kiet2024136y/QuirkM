@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Net.NetworkInformation;
+
 namespace QuirkM
 {
 
@@ -143,7 +144,7 @@ namespace QuirkM
                 {
 
 
-                    String ip = "192.168.1.4";
+                    String ip = GetLocalIPAddress();
                     int port = 5001;
                     TcpClient cli = new TcpClient(ip, port);
                     NetworkStream ns = cli.GetStream();
@@ -172,8 +173,6 @@ namespace QuirkM
                         Console.Write("Loi:" + e.Message);
                     }
 
-
-
                 }
                 else
                 {
@@ -184,6 +183,21 @@ namespace QuirkM
             }
 
         }
+        static string GetLocalIPAddress()
+        {
+            string localIP = "";
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIP = ip.ToString();
+                    break;
+                }
+            }
+            return localIP;
+        }
+
         static void RecvMsg(NetworkStream ns)
         {
 
@@ -214,4 +228,4 @@ namespace QuirkM
             }
         }
     }
-} 
+}
